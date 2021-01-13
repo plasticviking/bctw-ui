@@ -4,6 +4,7 @@ import { codeApi as code_api } from 'api/code_api';
 import { collarApi as collar_api } from 'api/collar_api';
 import { critterApi as critter_api } from 'api/critter_api';
 import { mapApi as map_api } from 'api/map_api';
+import { userApi as user_api } from 'api/user_api';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { useMemo } from 'react';
 import { useMutation, useQuery, UseMutationOptions, UseMutationResult, UseQueryResult } from 'react-query';
@@ -11,6 +12,7 @@ import { Animal } from 'types/animal';
 import { ICode, ICodeHeader } from 'types/code';
 import { Collar, ICollar } from 'types/collar';
 import { CollarHistory } from 'types/collar_history';
+import { useKeycloak } from '@react-keycloak/web';
 
 import {
   eCollarType,
@@ -18,6 +20,8 @@ import {
   ICollarLinkPayload,
   RequestPingParams,
 } from '../api/api_interfaces';
+import { UserRole } from 'types/user';
+import useKeycloakWrapper from './useKeycloakWrapper';
 
 /**
  * Returns an instance of axios with baseURL set.
@@ -25,11 +29,17 @@ import {
  * @return {AxiosInstance}
  */
 const useApi = (): AxiosInstance => {
+  const { keycloak } = useKeycloak();
+  const userInfo = keycloak.loadUserInfo();
+  // const userProfile = keycloak.loadUserProfile();
   const instance = useMemo(() => {
     return axios.create({
+      headers: {
+        Authorization: `Bearer ${keycloak?.token}`
+      },
       baseURL: getBaseUrl()
     });
-  }, []);
+  }, [keycloak]);
   return instance;
 };
 
@@ -45,6 +55,7 @@ export const useTelemetryApi = (): Record<string, unknown> => {
   const codeApi = code_api(api);
   const bulkApi = bulk_api(api);
   const mapApi = map_api(api);
+  const userApi = user_api(api);
 
   const defaultQueryOptions = {
     refetchOnWindowFocus: false,
@@ -107,6 +118,12 @@ export const useTelemetryApi = (): Record<string, unknown> => {
     return useQuery<CollarHistory[], AxiosError>(['collarHistory', critterId], () => collarApi.getCollarHistory(critterId), { ...config });
   }
 
+  /**
+   * @param config 
+   * @returns
+   */
+  const useUserRole = (): UseQueryResult => useQuery<UserRole, AxiosError>('userRole', () => userApi.getUserRole())
+
 
   /**
    * 
@@ -136,6 +153,7 @@ export const useTelemetryApi = (): Record<string, unknown> => {
     useAssignedCritters,
     useUnassignedCritters,
     useCollarHistory,
+    useUserRole,
     // mutations
     useMutateBulkCsv,
     useMutateCollar,

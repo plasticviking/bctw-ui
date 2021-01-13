@@ -10,6 +10,7 @@ import appTheme from 'themes/appTheme';
 import { DatabaseContext, DatabaseContextProvider, IDatabaseContext } from './contexts/DatabaseContext';
 import { DatabaseChangesContextProvider } from 'contexts/DatabaseChangesContext';
 import { ResponseProvider } from 'contexts/ApiResponseContext';
+import Keycloak, { KeycloakConfig, KeycloakInitOptions, KeycloakInstance } from 'keycloak-js';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,6 +20,25 @@ const useStyles = makeStyles(() => ({
     overflow: 'hidden'
   }
 }));
+const keycloakConfig: KeycloakConfig = {
+  realm: process.env.REACT_APP_KEYCLOAK_REALM,
+  url: process.env.REACT_APP_KEYCLOAK_URL,
+  clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID
+};
+
+const initConfig: KeycloakInitOptions = {
+  onLoad: 'login-required',
+  checkLoginIframe: false,
+  // added http://localhost:1111/* to keycloak -> clients -> settings -> valid redirect ursl
+};
+
+//@ts-ignore
+const keycloak: KeycloakInstance = new Keycloak(keycloakConfig);
+
+const layoutProps = {
+  keycloak,
+  initConfig
+};
 
 const queryClient = new QueryClient();
 
@@ -38,7 +58,7 @@ export default function App(): JSX.Element {
                   <DatabaseChangesContextProvider>
                     <Router>
                       <SideBar routes={AppRoutes} />
-                      <DefaultLayout>
+                      <DefaultLayout {...layoutProps}>
                         <ResponseProvider>
                           <AppRouter />
                         </ResponseProvider>

@@ -67,7 +67,7 @@ export class Collar implements ICollar {
 export enum NewCollarType {
   Other = '',
   VHF = 'VHF',
-  Vect = 'Vectronics',
+  Vect = 'Vectronic',
 }
 
 // properties displayed on collar pages

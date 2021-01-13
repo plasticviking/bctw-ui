@@ -24,7 +24,7 @@ const CollarStrings = {
   exportText: '',
   addCollarTypeTitle: 'Select Collar Type',
   addCollarTypeText: 'What type of collar would you like to add?',
-  addCollarVect: 'Vectronics Collar',
+  addCollarVect: 'Vectronic Collar',
   addCollarVHF: 'VHF Collar',
   importTitle: 'Bulk Import VHF Collars',
   importText: 'Use this feature to add multiple new collars.'
