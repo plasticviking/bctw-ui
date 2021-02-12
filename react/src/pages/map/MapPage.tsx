@@ -132,7 +132,8 @@ const MapPage: React.FC = () => {
   };
 
   const drawLatestPings = () => {
-    console.log('yo mama')
+    // TODO: request latest pings and draw to map
+    // TODO: pass back the layer reference to be added to the legend.
   };
 
   const initMap = (): void => {
