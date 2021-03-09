@@ -6,7 +6,7 @@ import { Link as MuiLink } from '@material-ui/core';
 
 // Icons
 import Icon from '@mdi/react';
-import { mdiAccountCircle, mdiAccountRemove, mdiProgressClock } from '@mdi/js';
+import { mdiAccountCircle, mdiAccountRemove, mdiProgressClock, mdiBell } from '@mdi/js';
 
 // Assets
 import 'styles/AppHeader.scss';
@@ -14,10 +14,13 @@ import headerImage from 'assets/images/gov3_bc_logo.png';
 import { UserContext } from 'contexts/UserContext';
 import { User } from 'types/user';
 import { IconButton } from '@material-ui/core';
+import { AlertContext } from 'contexts/AlertContext';
 
 const AppHeader = (): JSX.Element => {
   const useUser = useContext(UserContext);
+  const useAlert = useContext(AlertContext);
   const [user, setUser] = useState<User>(null);
+  const [alertCount, setAlertCount] = useState<number>(0);
   // const preventDefault = (event) => event.preventDefault();
 
   useEffect(() => {
@@ -25,6 +28,12 @@ const AppHeader = (): JSX.Element => {
       setUser(useUser.user);
     }
   }, [useUser]);
+
+  useEffect(() => {
+    if (useAlert?.alerts?.length) {
+      setAlertCount(useAlert.alerts.length);
+    }
+  }, [useAlert]);
 
   return (
     <header className={'app-header'}>
@@ -35,6 +44,20 @@ const AppHeader = (): JSX.Element => {
         </MuiLink>
         <nav className='profile-nav'>
           <ul>
+            <li>
+              <div className={'alerts'}>
+                <IconButton component={Link} to='/alert' disabled={!alertCount}>
+                  <Icon
+                    path={mdiBell}
+                    color={alertCount ? 'red' : 'grey'}
+                    className={'icon'}
+                    title='User Alerts'
+                    size={1}
+                  />
+                </IconButton>
+                {alertCount ? <span>{alertCount}</span> : null}
+              </div>
+            </li>
             <li>
               <div className={'username'}>
                 <IconButton component={Link} to='/profile'>

@@ -6,6 +6,7 @@ import Home from 'pages/Home';
 import MapPage from 'pages/map/MapPage';
 import TerrainPage from 'pages/terrain/TerrainPage';
 import AdminPage from 'pages/user/AdminPage';
+import AlertPage from 'pages/user/AlertPage';
 import UserProfile from 'pages/user/UserProfile';
 import { FunctionComponent, useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -30,6 +31,7 @@ const AppRoutes: RouteKey[] = [
     sort: 1,
     icon: 'critter'
   },
+  { name: 'alert', path: '/alert', title: 'Alerts', component: AlertPage, sort: 0, icon: '' },
   { name: 'codes', path: '/codes', title: 'Codes', component: CodePage, sort: 1, icon: 'code' },
   { name: 'collars', path: '/collars', title: 'Collars', component: CollarPage, sort: 1, icon: 'collar' },
   { name: 'map', path: '/map', title: 'Location Map', component: MapPage, sort: 1, icon: 'map' },
@@ -57,6 +59,7 @@ const AppRouter = ({ onContentChange }: AppRouterProps): JSX.Element => {
 
   useEffect(() => {
     return history.listen((location) => {
+      // console.log('route history changed', location)
       // wipe the sidebar content when navigation to new page
       onContentChange(null);
     });
